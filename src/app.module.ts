@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AllcodeModule } from './allcode/allcode.module';
 import { Allcode } from './allcode/entities/allcode.entity';
 import { ConfigModule } from '@nestjs/config';
+import { LoginModule } from './login/login.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     UsersModule,
     AllcodeModule,
+    LoginModule,
   ],
   controllers: [AppController],
   providers: [AppService],

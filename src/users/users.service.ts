@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as fs from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -65,6 +66,12 @@ export class UsersService {
         };
       }
       await this.userRepository.update(id, { ...updateUserDto });
+      if (updateUserDto.image) {
+        fs.unlink(`uploads/avatars/${user.image}`, (err) => {
+          if (err) throw err;
+          console.log('Delete File successfully.');
+        });
+      }
       return {
         statusCode: 0,
         message: 'Cập nhật người dùng thành công',
@@ -84,6 +91,12 @@ export class UsersService {
         };
       }
       await this.userRepository.delete(id);
+      if (user.image) {
+        fs.unlink(`uploads/avatars/${user.image}`, (err) => {
+          if (err) throw err;
+          console.log('Delete File successfully.');
+        });
+      }
       return {
         statusCode: 0,
         message: 'Xoá người dùng thành công',
