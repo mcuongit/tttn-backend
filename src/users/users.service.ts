@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
+import { In, Repository } from 'typeorm';
+import { CreateUserDto, ListIds } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as fs from 'fs';
@@ -66,7 +66,7 @@ export class UsersService {
         };
       }
       await this.userRepository.update(id, { ...updateUserDto });
-      if (updateUserDto.image) {
+      if (updateUserDto.image && user.image) {
         fs.unlink(`uploads/avatars/${user.image}`, (err) => {
           if (err) throw err;
           console.log('Delete File successfully.');
@@ -76,6 +76,18 @@ export class UsersService {
         statusCode: 0,
         message: 'Cập nhật người dùng thành công',
       };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async delMultiples(listIds: ListIds) {
+    try {
+      return await this.userRepository
+        .createQueryBuilder('users')
+        .delete()
+        .where('users.id IN (:...ids)', { ids: listIds })
+        .execute();
     } catch (error) {
       throw new Error(error);
     }

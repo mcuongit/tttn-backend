@@ -12,3 +12,7 @@ export class CreateUserDto {
   roleId: UserRole;
   image: string;
 }
+
+export class ListIds {
+  ids: [];
+}

@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, ListIds } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Res, UploadedFile, UseInterceptors } from '@nestjs/common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -38,6 +38,11 @@ export class UsersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Delete('/del-mul')
+  delMuls(@Body() listIds: ListIds) {
+    return this.usersService.delMultiples(listIds);
   }
 
   @Delete(':id')
