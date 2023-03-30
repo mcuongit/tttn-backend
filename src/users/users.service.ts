@@ -83,6 +83,22 @@ export class UsersService {
 
   async delMultiples(listIds: ListIds) {
     try {
+      const usersList = await this.userRepository.findBy({
+        id: In([...[listIds]]),
+      });
+      if (usersList.length === 0)
+        return {
+          statusCode: 5,
+          message: 'Không tìm thấy người dùng',
+        };
+      usersList.forEach((element) => {
+        if (element.image) {
+          fs.unlink(`uploads/avatars/${element.image}`, (err) => {
+            if (err) throw err;
+            console.log('Delete File successfully.');
+          });
+        }
+      });
       return await this.userRepository
         .createQueryBuilder('users')
         .delete()

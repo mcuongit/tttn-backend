@@ -1,9 +1,12 @@
+import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  Index,
 } from 'typeorm';
 
 @Entity('allcodes')
@@ -12,6 +15,7 @@ export class Allcode {
   id: number;
 
   @Column()
+  @Index()
   key: string;
 
   @Column()
@@ -28,4 +32,9 @@ export class Allcode {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => User, (user) => user.positionData)
+  @OneToMany(() => User, (user) => user.genderData)
+  @OneToMany(() => User, (user) => user.positionData)
+  users: User[];
 }

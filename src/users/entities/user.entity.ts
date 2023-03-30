@@ -3,10 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   UpdateDateColumn,
 } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
 import * as bcrypt from 'bcrypt';
+import { Allcode } from 'src/allcode/entities/allcode.entity';
 
 export enum UserGender {
   MALE = 'M',
@@ -42,28 +45,18 @@ export class User {
   @Column({ select: false })
   password?: string;
 
-  @Column({
-    type: 'enum',
-    enum: UserGender,
-    default: UserGender.MALE,
-  })
-  gender: UserGender;
+  // @Column({
+  //   type: 'enum',
+  //   enum: UserGender,
+  //   default: UserGender.MALE,
+  // })
+  // gender: UserGender;
 
   @Column()
   address: string;
 
   @Column()
-  positionId: string;
-
-  @Column()
   phone: string;
-
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-    default: UserRole.ADMIN,
-  })
-  roleId: UserRole;
 
   @Column({ nullable: true })
   image: string;
@@ -73,4 +66,25 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ nullable: true })
+  positionId: string;
+
+  @Column({ nullable: true })
+  gender: string;
+
+  @Column({ nullable: true })
+  roleId: string;
+
+  @ManyToOne(() => Allcode)
+  @JoinColumn({ name: 'positionId', referencedColumnName: 'key' })
+  positionData: Allcode;
+
+  @ManyToOne(() => Allcode)
+  @JoinColumn({ name: 'gender', referencedColumnName: 'key' })
+  genderData: Allcode;
+
+  @ManyToOne(() => Allcode)
+  @JoinColumn({ name: 'roleId', referencedColumnName: 'key' })
+  roleData: Allcode;
 }

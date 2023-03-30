@@ -8,6 +8,7 @@ import { AllcodeModule } from './allcode/allcode.module';
 import { Allcode } from './allcode/entities/allcode.entity';
 import { ConfigModule } from '@nestjs/config';
 import { LoginModule } from './login/login.module';
+import { HomeModule } from './home/home.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LoginModule } from './login/login.module';
     UsersModule,
     AllcodeModule,
     LoginModule,
+    HomeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

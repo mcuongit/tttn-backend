@@ -68,7 +68,10 @@ export class UsersController {
       }),
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(
+    @UploadedFile()
+    file: Express.Multer.File,
+  ) {
     console.log(file);
     return { imagePath: file.path, name: file.filename };
   }
