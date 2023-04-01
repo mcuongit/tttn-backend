@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRole } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 // import { CreateHomeDto } from './dto/create-home.dto';
 // import { UpdateHomeDto } from './dto/update-home.dto';
@@ -40,6 +40,9 @@ export class HomeService {
           positionData: true,
           genderData: true,
           roleData: true,
+        },
+        where: {
+          roleId: UserRole.DOCTOR,
         },
         take: lim,
       });

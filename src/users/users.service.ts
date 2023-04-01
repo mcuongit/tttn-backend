@@ -67,10 +67,13 @@ export class UsersService {
       }
       await this.userRepository.update(id, { ...updateUserDto });
       if (updateUserDto.image && user.image) {
-        fs.unlink(`uploads/avatars/${user.image}`, (err) => {
-          if (err) throw err;
-          console.log('Delete File successfully.');
-        });
+        const path = `uploads/avatars/${user.image}`;
+        if (fs.existsSync(path)) {
+          fs.unlink(path, (err) => {
+            if (err) throw err;
+            console.log('Delete File successfully.');
+          });
+        }
       }
       return {
         statusCode: 0,
@@ -93,10 +96,13 @@ export class UsersService {
         };
       usersList.forEach((element) => {
         if (element.image) {
-          fs.unlink(`uploads/avatars/${element.image}`, (err) => {
-            if (err) throw err;
-            console.log('Delete File successfully.');
-          });
+          const path = `uploads/avatars/${element.image}`;
+          if (fs.existsSync(path)) {
+            fs.unlink(path, (err) => {
+              if (err) throw err;
+              console.log('Delete File successfully.');
+            });
+          }
         }
       });
       return await this.userRepository
@@ -120,10 +126,13 @@ export class UsersService {
       }
       await this.userRepository.delete(id);
       if (user.image) {
-        fs.unlink(`uploads/avatars/${user.image}`, (err) => {
-          if (err) throw err;
-          console.log('Delete File successfully.');
-        });
+        const path = `uploads/avatars/${user.image}`;
+        if (fs.existsSync(path)) {
+          fs.unlink(path, (err) => {
+            if (err) throw err;
+            console.log('Delete File successfully.');
+          });
+        }
       }
       return {
         statusCode: 0,

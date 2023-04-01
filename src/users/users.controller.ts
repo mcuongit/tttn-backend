@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  StreamableFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, ListIds } from './dto/create-user.dto';
@@ -15,6 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { createReadStream } from 'fs';
+import * as fs from 'fs';
 
 @Controller('users')
 export class UsersController {
@@ -77,10 +79,36 @@ export class UsersController {
   }
 
   @Get('avatar/:imagename')
-  async getAvatar(@Param('imagename') imagename, @Res() res) {
-    const img = createReadStream(
-      join(process.cwd(), `uploads/avatars/${imagename}`),
-    );
-    img.pipe(res);
+  getAvatar(
+    @Param('imagename') imagename: string,
+    @Res({ passthrough: true }) res,
+  ) {
+    try {
+      const filePath = `./uploads/avatars/${imagename}`;
+      if (!fs.existsSync(filePath)) {
+        res.writeHead(404, {
+          'Content-Type': 'text/plain',
+        });
+        res.end('404 Not Found');
+        return;
+      }
+      let contentType = 'text/plain';
+      switch (extname(filePath)) {
+        case '.png':
+          contentType = 'image/png';
+          break;
+        case '.jpg':
+          contentType = 'image/jpeg';
+        default:
+          break;
+      }
+      res.writeHead(200, {
+        'Content-Type': contentType,
+      });
+      const file = createReadStream(join(process.cwd(), filePath));
+      return new StreamableFile(file);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

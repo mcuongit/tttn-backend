@@ -23,6 +23,14 @@ export enum UserRole {
   PATIENT = 'R3',
 }
 
+export enum UserPosition {
+  PHYSICIAN = 'P0',
+  MASTER = 'P1',
+  DOCTOR = 'P2',
+  ASSOCIATEPROFESSOR = 'P3',
+  PROFESSOR = 'P4',
+}
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()

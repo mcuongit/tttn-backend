@@ -9,6 +9,8 @@ import { Allcode } from './allcode/entities/allcode.entity';
 import { ConfigModule } from '@nestjs/config';
 import { LoginModule } from './login/login.module';
 import { HomeModule } from './home/home.module';
+import { MarkdownModule } from './markdown/markdown.module';
+import { Markdown } from './markdown/entities/markdown.entity';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { HomeModule } from './home/home.module';
       username: process.env.DATABASE_USER,
       password: '',
       database: process.env.DB_NAME,
-      entities: [User, Allcode],
+      entities: [User, Allcode, Markdown],
       synchronize: true,
       logging: true,
     }),
@@ -28,6 +30,7 @@ import { HomeModule } from './home/home.module';
     AllcodeModule,
     LoginModule,
     HomeModule,
+    MarkdownModule,
   ],
   controllers: [AppController],
   providers: [AppService],
