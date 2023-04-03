@@ -11,6 +11,9 @@ import { LoginModule } from './login/login.module';
 import { HomeModule } from './home/home.module';
 import { MarkdownModule } from './markdown/markdown.module';
 import { Markdown } from './markdown/entities/markdown.entity';
+import { DoctorModule } from './doctor/doctor.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { Schedule } from './schedule/entities/schedule.entity';
 
 @Module({
   imports: [
@@ -22,7 +25,7 @@ import { Markdown } from './markdown/entities/markdown.entity';
       username: process.env.DATABASE_USER,
       password: '',
       database: process.env.DB_NAME,
-      entities: [User, Allcode, Markdown],
+      entities: [User, Allcode, Markdown, Schedule],
       synchronize: true,
       logging: true,
     }),
@@ -31,6 +34,8 @@ import { Markdown } from './markdown/entities/markdown.entity';
     LoginModule,
     HomeModule,
     MarkdownModule,
+    DoctorModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

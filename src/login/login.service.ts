@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CreateLoginDto } from './dto/create-login.dto';
 import * as bcrypt from 'bcrypt';
-import { AppDataSource } from '../db/data-source';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -43,22 +42,27 @@ export class LoginService {
           message: 'Email không tồn tại trong hệ thống',
         };
       }
-      const u = await AppDataSource.getRepository(User)
-        .createQueryBuilder('users')
-        .select(['users.email', 'users.password'])
-        .where('users.email = :email', { email: createLoginDto.email })
-        .getOne();
-      const user = await this.userRepository.findOneBy({
-        email: createLoginDto.email,
+      // get password
+      const pwd = await this.userRepository.findOne({
+        select: {
+          password: true,
+        },
+        where: {
+          email: createLoginDto.email,
+        },
       });
+      console.log(pwd.password);
       //   so sánh mật khẩu
-      const cpm = await bcrypt.compare(createLoginDto.password, u.password);
+      const cpm = await bcrypt.compare(createLoginDto.password, pwd.password);
       if (!cpm) {
         return {
           statusCode: 4,
           message: 'Sai mật khẩu',
         };
       }
+      const user = await this.userRepository.findOneBy({
+        email: createLoginDto.email,
+      });
       return {
         statusCode: 0,
         message: 'OK',

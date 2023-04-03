@@ -5,11 +5,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   UpdateDateColumn,
 } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
 import * as bcrypt from 'bcrypt';
 import { Allcode } from 'src/allcode/entities/allcode.entity';
+import { Markdown } from 'src/markdown/entities/markdown.entity';
 
 export enum UserGender {
   MALE = 'M',
@@ -53,13 +55,6 @@ export class User {
   @Column({ select: false })
   password?: string;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: UserGender,
-  //   default: UserGender.MALE,
-  // })
-  // gender: UserGender;
-
   @Column()
   address: string;
 
@@ -83,6 +78,9 @@ export class User {
 
   @Column({ nullable: true })
   roleId: string;
+
+  @OneToOne(() => Markdown, (markdown) => markdown.user)
+  markdown: Markdown;
 
   @ManyToOne(() => Allcode)
   @JoinColumn({ name: 'positionId', referencedColumnName: 'key' })

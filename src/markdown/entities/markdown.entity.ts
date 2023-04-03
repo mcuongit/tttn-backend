@@ -1,7 +1,10 @@
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,11 +26,15 @@ export class Markdown {
   @Column({ nullable: true })
   doctorId: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   specialtyId: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   clinicId: number;
+
+  @OneToOne(() => User, (user) => user.markdown)
+  @JoinColumn({ name: 'doctorId', referencedColumnName: 'id' })
+  user: User;
 
   @CreateDateColumn()
   createdAt: Date;
