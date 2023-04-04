@@ -1,3 +1,4 @@
+import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
@@ -24,7 +25,7 @@ export class Allcode {
   @Column()
   valueEn: string;
 
-  @Column({ default: true })
+  @Column()
   valueVi: string;
 
   @CreateDateColumn()
@@ -37,4 +38,7 @@ export class Allcode {
   @OneToMany(() => User, (user) => user.genderData)
   @OneToMany(() => User, (user) => user.positionData)
   users: User[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.timeTypeData)
+  schedules: Schedule[];
 }

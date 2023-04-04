@@ -22,6 +22,14 @@ export class ScheduleController {
     return this.scheduleService.findOne(+id);
   }
 
+  @Get('get-by-date/:doctorId/:date')
+  findSchedule(
+    @Param('doctorId') doctorId: number,
+    @Param('date') date: number,
+  ) {
+    return this.scheduleService.findSchedule(doctorId, date);
+  }
+
   // @Patch(':id')
   // update(
   //   @Param('id') id: string,

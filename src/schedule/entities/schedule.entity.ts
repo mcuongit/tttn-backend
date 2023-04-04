@@ -1,7 +1,10 @@
+import { Allcode } from 'src/allcode/entities/allcode.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,4 +37,8 @@ export class Schedule {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Allcode)
+  @JoinColumn({ name: 'timeType', referencedColumnName: 'key' })
+  timeTypeData: Allcode;
 }

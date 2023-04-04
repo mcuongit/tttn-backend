@@ -36,13 +36,15 @@ export class DoctorService {
           message: 'Thiếu thông tin bác sĩ',
         };
       }
-      const d = this.markdownRepository.create(body);
-      const res = await this.markdownRepository.save(d);
+      const r = await this.markdownRepository.upsert(body, {
+        conflictPaths: ['doctorId'],
+        upsertType: 'on-duplicate-key-update',
+      });
       return {
         statusCode: 0,
         message: 'OK',
         data: {
-          ...res,
+          ...r,
         },
       };
     } catch (error) {

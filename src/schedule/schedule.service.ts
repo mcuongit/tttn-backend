@@ -42,6 +42,37 @@ export class ScheduleService {
     }
   }
 
+  async findSchedule(doctorId: number, date: number) {
+    try {
+      const res = await this.scheduleRepository.find({
+        select: {
+          timeTypeData: {
+            type: true,
+            valueVi: true,
+            valueEn: true,
+          },
+        },
+        relations: {
+          timeTypeData: true,
+        },
+        where: {
+          doctorId: doctorId,
+          date: new Date(+date),
+        },
+        order: {
+          timeType: 'ASC',
+        },
+      });
+      return {
+        statusCode: 0,
+        message: 'OK',
+        data: res,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async findAll() {
     return this.scheduleRepository.find();
   }

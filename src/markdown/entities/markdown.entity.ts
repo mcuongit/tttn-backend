@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -23,6 +24,7 @@ export class Markdown {
   @Column({ type: 'longtext', nullable: true })
   description: string;
 
+  @Index({ unique: true })
   @Column({ nullable: true })
   doctorId: number;
 
