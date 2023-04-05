@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,6 +33,10 @@ export class Booking {
 
   @Column({ nullable: true })
   timeType: string;
+
+  @Column({ nullable: true })
+  @Generated('uuid')
+  token: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -18,6 +18,8 @@ import { DoctorInfoModule } from './doctor_info/doctor_info.module';
 import { DoctorInfo } from './doctor_info/entities/doctor_info.entity';
 import { BookingModule } from './booking/booking.module';
 import { Booking } from './booking/entities/booking.entity';
+import { SpecialtyModule } from './specialty/specialty.module';
+import { Specialty } from './specialty/entities/specialty.entity';
 
 @Module({
   imports: [
@@ -29,7 +31,15 @@ import { Booking } from './booking/entities/booking.entity';
       username: process.env.DATABASE_USER,
       password: '',
       database: process.env.DB_NAME,
-      entities: [User, Allcode, Markdown, Schedule, DoctorInfo, Booking],
+      entities: [
+        User,
+        Allcode,
+        Markdown,
+        Schedule,
+        DoctorInfo,
+        Booking,
+        Specialty,
+      ],
       synchronize: true,
       logging: true,
     }),
@@ -42,6 +52,7 @@ import { Booking } from './booking/entities/booking.entity';
     ScheduleModule,
     DoctorInfoModule,
     BookingModule,
+    SpecialtyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

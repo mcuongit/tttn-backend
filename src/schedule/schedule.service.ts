@@ -54,6 +54,7 @@ export class ScheduleService {
         },
         relations: {
           timeTypeData: true,
+          userData: true,
         },
         where: {
           doctorId: doctorId,

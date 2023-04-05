@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   UpdateDateColumn,
 } from 'typeorm';
@@ -13,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { Allcode } from 'src/allcode/entities/allcode.entity';
 import { Markdown } from 'src/markdown/entities/markdown.entity';
 import { DoctorInfo } from 'src/doctor_info/entities/doctor_info.entity';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
 
 export enum UserGender {
   MALE = 'M',
@@ -38,10 +40,10 @@ export enum UserPosition {
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ nullable: true })
   firstName: string;
 
-  @Column()
+  @Column({ nullable: true })
   lastName: string;
 
   @Column()
@@ -97,4 +99,7 @@ export class User {
   @ManyToOne(() => Allcode)
   @JoinColumn({ name: 'roleId', referencedColumnName: 'key' })
   roleData: Allcode;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.userData)
+  doctorData: Schedule;
 }

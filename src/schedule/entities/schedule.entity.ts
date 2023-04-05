@@ -1,8 +1,10 @@
 import { Allcode } from 'src/allcode/entities/allcode.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -27,6 +29,7 @@ export class Schedule {
   timeType: string;
 
   @Column()
+  @Index()
   doctorId: number;
 
   @Column({ default: 1 })
@@ -41,4 +44,8 @@ export class Schedule {
   @ManyToOne(() => Allcode)
   @JoinColumn({ name: 'timeType', referencedColumnName: 'key' })
   timeTypeData: Allcode;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'doctorId', referencedColumnName: 'id' })
+  userData: User;
 }
