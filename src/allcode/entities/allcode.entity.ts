@@ -1,3 +1,4 @@
+import { DoctorInfo } from 'src/doctor_info/entities/doctor_info.entity';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -41,4 +42,9 @@ export class Allcode {
 
   @OneToMany(() => Schedule, (schedule) => schedule.timeTypeData)
   schedules: Schedule[];
+
+  @OneToMany(() => DoctorInfo, (doctorinfo) => doctorinfo.priceData)
+  @OneToMany(() => DoctorInfo, (doctorinfo) => doctorinfo.provinceData)
+  @OneToMany(() => DoctorInfo, (doctorinfo) => doctorinfo.paymentData)
+  doctorsInfo: DoctorInfo[];
 }

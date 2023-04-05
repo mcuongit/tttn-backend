@@ -28,6 +28,44 @@ export class DoctorService {
     }
   }
 
+  async getDoctorProfile(id: number) {
+    try {
+      if (!id) {
+        return {
+          statusCode: 1,
+          message: 'Thiếu id bác sĩ',
+        };
+      }
+      const doctor = await this.userRepository.findOne({
+        where: {
+          id: id,
+        },
+        relations: {
+          positionData: true,
+          doctorInfoData: {
+            provinceData: true,
+            paymentData: true,
+            priceData: true,
+          },
+          markdown: true,
+        },
+        select: {
+          positionData: {
+            valueEn: true,
+            valueVi: true,
+          },
+        },
+      });
+      return {
+        statusCode: 0,
+        message: 'OK',
+        data: doctor,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async saveDoctorInfo(body: CreateMarkdownDto) {
     try {
       if (!body.contentHTML || !body.contentMarkdown) {

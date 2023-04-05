@@ -11,6 +11,11 @@ export class DoctorController {
     return this.doctorService.findAllDoctor();
   }
 
+  @Get('get-doctor-profile/:id')
+  findDoctorProfile(@Param('id') id: string) {
+    return this.doctorService.getDoctorProfile(+id);
+  }
+
   @Post('save-doctor-info')
   saveDoctor(@Body() body: CreateMarkdownDto) {
     return this.doctorService.saveDoctorInfo(body);

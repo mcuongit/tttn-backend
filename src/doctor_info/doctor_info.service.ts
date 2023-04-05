@@ -51,6 +51,51 @@ export class DoctorInfoService {
     }
   }
 
+  async findDoctorExtraInfo(id: number) {
+    try {
+      if (!id) {
+        return {
+          statusCode: 1,
+          message: 'Thiếu thông tin',
+        };
+      }
+      const response = await this.doctorInfoRepository.findOne({
+        where: {
+          doctorId: id,
+        },
+        relations: {
+          priceData: true,
+          paymentData: true,
+          provinceData: true,
+        },
+        select: {
+          priceData: {
+            type: true,
+            valueEn: true,
+            valueVi: true,
+          },
+          provinceData: {
+            type: true,
+            valueEn: true,
+            valueVi: true,
+          },
+          paymentData: {
+            type: true,
+            valueEn: true,
+            valueVi: true,
+          },
+        },
+      });
+      return {
+        statusCode: 0,
+        message: 'OK',
+        data: response,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   update(id: number, updateDoctorInfoDto: UpdateDoctorInfoDto) {
     return `This action updates a #${id} doctorInfo`;
   }

@@ -12,6 +12,7 @@ import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGenerat
 import * as bcrypt from 'bcrypt';
 import { Allcode } from 'src/allcode/entities/allcode.entity';
 import { Markdown } from 'src/markdown/entities/markdown.entity';
+import { DoctorInfo } from 'src/doctor_info/entities/doctor_info.entity';
 
 export enum UserGender {
   MALE = 'M',
@@ -52,13 +53,13 @@ export class User {
     this.password = hash;
   }
 
-  @Column({ select: false })
+  @Column({ select: false, default: null })
   password?: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 
   @Column({ nullable: true })
@@ -81,6 +82,9 @@ export class User {
 
   @OneToOne(() => Markdown, (markdown) => markdown.user)
   markdown: Markdown;
+
+  @OneToOne(() => DoctorInfo, (doctor_info) => doctor_info.user)
+  doctorInfoData: DoctorInfo;
 
   @ManyToOne(() => Allcode)
   @JoinColumn({ name: 'positionId', referencedColumnName: 'key' })
