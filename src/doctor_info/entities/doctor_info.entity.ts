@@ -30,6 +30,12 @@ export class DoctorInfo {
   @Column()
   paymentId: string;
 
+  @Column({ nullable: true })
+  specialtyId: number;
+
+  @Column({ nullable: true })
+  clinicId: number;
+
   @Column()
   addressClinic: string;
 

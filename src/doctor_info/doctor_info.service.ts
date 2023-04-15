@@ -30,6 +30,39 @@ export class DoctorInfoService {
     return `This action returns all doctorInfo`;
   }
 
+  async findAllBySpecId(id: number, province: string) {
+    try {
+      if (!id || !province) {
+        return {
+          statusCode: 1,
+          message: 'Thiếu thông tin id',
+        };
+      }
+      let res = null;
+      if (province === 'ALL') {
+        res = await this.doctorInfoRepository.find({
+          where: {
+            specialtyId: id,
+          },
+        });
+      } else {
+        res = await this.doctorInfoRepository.find({
+          where: {
+            specialtyId: id,
+            provinceId: province,
+          },
+        });
+      }
+      return {
+        statusCode: 0,
+        message: 'OK hh',
+        data: res,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async findOne(id: number) {
     try {
       if (!id) {
