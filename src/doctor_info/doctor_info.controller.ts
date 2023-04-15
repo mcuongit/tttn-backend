@@ -30,6 +30,11 @@ export class DoctorInfoController {
     return this.doctorInfoService.findOne(+id);
   }
 
+  @Get('find-by-clinic/:id')
+  findByClinic(@Param('id') id: string) {
+    return this.doctorInfoService.findAllByClinic(+id);
+  }
+
   @Get('get-by-spec/:id/:prov')
   findBySpec(@Param('id') id: string, @Param('prov') province: string) {
     return this.doctorInfoService.findAllBySpecId(+id, province);

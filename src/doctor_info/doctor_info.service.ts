@@ -30,6 +30,19 @@ export class DoctorInfoService {
     return `This action returns all doctorInfo`;
   }
 
+  async findAllByClinic(id: number) {
+    if (!id)
+      return {
+        statusCode: 1,
+        message: 'Thiếu thông tin id',
+      };
+    return await this.doctorInfoRepository.find({
+      where: {
+        clinicId: id,
+      },
+    });
+  }
+
   async findAllBySpecId(id: number, province: string) {
     try {
       if (!id || !province) {
