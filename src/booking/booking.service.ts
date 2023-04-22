@@ -1,92 +1,102 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { User, UserRole } from 'src/users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking, StatusId } from './entities/booking.entity';
 import { sendSimpleEmail } from 'src/mailer/service/sendEmailService';
+import { BookingDto } from './dto/booking.dto';
+import { Patient } from 'src/patient/entities/patient.entity';
+import { CreatePatientDto } from 'src/patient/dto/create-patient.dto';
 
 @Injectable()
 export class BookingService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(Patient)
+    private patientRepository: Repository<Patient>,
     @InjectRepository(Booking)
     private bookingRepository: Repository<Booking>,
   ) {}
-  async findOrCreate(data: any) {
-    try {
-      console.log(data);
-      if (!data.email || !data.fullName || !data.doctorId) {
-        return {
-          statusCode: 1,
-          message: 'Chưa điền đủ thông tin',
-        };
-      }
-
-      await sendSimpleEmail({
-        receiverEmail: data.email,
-        patientName: data.fullName,
-        time: data.timeString,
-        doctorName: data.doctorName,
-        redirectLink: 'google.com',
-      });
-      // return 0;
-      const user = await this.userRepository.findOneBy({
+  async findOrCreate(data: BookingDto) {
+    console.log(data);
+    const patient = await this.patientRepository.findOneBy({
+      email: data.email,
+    });
+    let toSaveBooking: CreateBookingDto;
+    if (patient) {
+      toSaveBooking = {
+        patientId: patient.id.toString(),
+        statusId: StatusId.NEW,
+        doctorId: data.doctorId,
+        date: data.date,
+        timeType: data.timeType,
+      };
+    } else {
+      const toSavePatient: CreatePatientDto = {
+        fullName: data.fullName,
+        gender: data.gender,
+        birthday: data.birthday,
+        address: data.address,
+        reason: data.reason,
         email: data.email,
-      });
-      let toSaveBooking: CreateBookingDto;
-      if (user) {
-        toSaveBooking = {
-          patientId: user.id.toString(),
-          statusId: StatusId.NEW,
-          doctorId: data.doctorId,
-          date: data.date,
-          timeType: data.timeType,
-        };
-      } else {
-        const toSaveUser = {
-          email: data.email,
-          roleId: UserRole.PATIENT,
-        };
-        const res = await this.userRepository.insert(toSaveUser);
-        const { insertId } = res.raw;
-        toSaveBooking = {
-          patientId: insertId,
-          statusId: StatusId.NEW,
-          doctorId: data.doctorId,
-          date: data.date,
-          timeType: data.timeType,
-        };
-      }
-      return this.create(toSaveBooking);
-      return toSaveBooking;
-    } catch (error) {
-      throw new Error(error);
+        phone: data.phone,
+      };
+      const res = await this.patientRepository.insert(toSavePatient);
+      const { insertId } = res.raw;
+      toSaveBooking = {
+        patientId: insertId,
+        statusId: StatusId.NEW,
+        doctorId: data.doctorId,
+        date: data.date,
+        timeType: data.timeType,
+      };
     }
+    const created = await this.create(toSaveBooking);
+    await sendSimpleEmail({
+      receiverEmail: data.email,
+      patientName: data.fullName,
+      time: data.timeString,
+      doctorName: data.doctorName,
+      redirectLink: `${process.env.REACT_URL}/verify-booking?doctorId=${created.doctorId}&token=${created.token}`,
+    });
+    return created;
   }
 
-  async create(data: any) {
-    try {
-      const day: Date = new Date(+data.date);
-      day.setHours(0, 0, 0, 0);
-      const existRecord = await this.bookingRepository.findOneBy({
-        patientId: data.patientId,
-        timeType: data.timeType,
-        date: day,
-      });
-      if (!existRecord) {
-        const _data = {
-          ...data,
-          date: day,
-        };
-        const c = this.bookingRepository.create(_data);
-        return this.bookingRepository.save(c);
-      }
-      return 0;
-    } catch (error) {
-      throw new Error(error);
+  async create(data: any): Promise<any> {
+    const day: Date = new Date(+data.date);
+    day.setHours(0, 0, 0, 0);
+    const existRecord = await this.bookingRepository.findOneBy({
+      patientId: data.patientId,
+      timeType: data.timeType,
+      date: day,
+    });
+    if (existRecord) {
+      throw new HttpException(
+        { message: 'Bạn đã có lịch hẹn trong khoảng thời gian này' },
+        HttpStatus.BAD_REQUEST,
+      );
     }
+    const _data = {
+      ...data,
+      date: day,
+    };
+    const c = this.bookingRepository.create(_data);
+    return this.bookingRepository.save(c);
+  }
+
+  async findByDoctorAndDate(doctorId: number, date: string) {
+    if (!doctorId || !date) {
+      throw new HttpException(
+        { message: 'Thiếu thông tin cần thiết' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return await this.bookingRepository.find({
+      where: {
+        statusId: StatusId.CONFIRMED,
+        doctorId: doctorId,
+        date: new Date(+date),
+      },
+    });
   }
 
   findAll() {
@@ -94,32 +104,28 @@ export class BookingService {
   }
 
   async findOne(data: any) {
-    try {
-      if (!data.token || !data.doctorId)
-        return {
-          statusCode: 3,
-          message: 'Thiếu tham số cần thiết',
-        };
-      const booking = await this.bookingRepository.findOneBy({
-        token: data.token,
-        doctorId: data.doctorId,
-        statusId: StatusId.NEW,
-      });
-      if (booking) {
-        await this.bookingRepository.update(booking.id, {
-          statusId: StatusId.CONFIRMED,
-        });
-        return {
-          statusCode: 0,
-          message: 'Xác nhận lịch khám thành công',
-        };
-      }
-      return {
-        statusCode: 1,
-        message: 'Lịch hẹn đã được xác nhận hoặc không tồn tại',
-      };
-    } catch (error) {
-      throw new Error(error);
+    if (!data.token || !data.doctorId)
+      throw new HttpException(
+        { message: 'Thiếu tham số cần thiết' },
+        HttpStatus.BAD_REQUEST,
+      );
+    const booking = await this.bookingRepository.findOneBy({
+      token: data.token,
+      doctorId: data.doctorId,
+      statusId: StatusId.NEW,
+    });
+    if (!booking) {
+      throw new HttpException(
+        { message: 'Lịch hẹn đã được xác nhận hoặc không tồn tại' },
+        HttpStatus.BAD_REQUEST,
+      );
     }
+    await this.bookingRepository.update(booking.id, {
+      statusId: StatusId.CONFIRMED,
+    });
+    return {
+      statusCode: 0,
+      message: 'Xác nhận lịch khám thành công',
+    };
   }
 }

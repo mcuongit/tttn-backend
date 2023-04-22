@@ -22,6 +22,8 @@ import { SpecialtyModule } from './specialty/specialty.module';
 import { Specialty } from './specialty/entities/specialty.entity';
 import { ClinicModule } from './clinic/clinic.module';
 import { Clinic } from './clinic/entities/clinic.entity';
+import { PatientModule } from './patient/patient.module';
+import { Patient } from './patient/entities/patient.entity';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { Clinic } from './clinic/entities/clinic.entity';
         Booking,
         Specialty,
         Clinic,
+        Patient,
       ],
       synchronize: true,
       logging: true,
@@ -57,6 +60,7 @@ import { Clinic } from './clinic/entities/clinic.entity';
     BookingModule,
     SpecialtyModule,
     ClinicModule,
+    PatientModule,
   ],
   controllers: [AppController],
   providers: [AppService],

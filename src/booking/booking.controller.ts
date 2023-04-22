@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { BookingService } from './booking.service';
 
 @Controller('booking')
@@ -8,6 +8,14 @@ export class BookingController {
   @Post('post-book-apointment')
   findOrCreate(@Body() data: any) {
     return this.bookingService.findOrCreate(data);
+  }
+
+  @Get('getPatientList/:doctorId/:date')
+  findByDoctorAndDate(
+    @Param('doctorId') doctorId: string,
+    @Param('date') date: string,
+  ) {
+    return this.bookingService.findByDoctorAndDate(+doctorId, date);
   }
 
   @Get()
