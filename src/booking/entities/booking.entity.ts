@@ -1,8 +1,12 @@
+import { Allcode } from 'src/allcode/entities/allcode.entity';
+import { Patient } from 'src/patient/entities/patient.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   Generated,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -43,4 +47,12 @@ export class Booking {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Patient)
+  @JoinColumn({ name: 'patientId', referencedColumnName: 'id' })
+  patientData: Patient;
+
+  @ManyToOne(() => Allcode)
+  @JoinColumn({ name: 'timeType', referencedColumnName: 'key' })
+  allcodeData: Allcode[];
 }

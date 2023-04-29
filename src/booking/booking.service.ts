@@ -3,7 +3,10 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking, StatusId } from './entities/booking.entity';
-import { sendSimpleEmail } from 'src/mailer/service/sendEmailService';
+import {
+  sendFinishMail,
+  sendSimpleEmail,
+} from 'src/mailer/service/sendEmailService';
 import { BookingDto } from './dto/booking.dto';
 import { Patient } from 'src/patient/entities/patient.entity';
 import { CreatePatientDto } from 'src/patient/dto/create-patient.dto';
@@ -96,7 +99,43 @@ export class BookingService {
         doctorId: doctorId,
         date: new Date(+date),
       },
+      relations: {
+        patientData: true,
+        allcodeData: true,
+      },
     });
+  }
+
+  async finishBooking(data: any) {
+    const { email, file, doctorId, patientId, timeType, fullName } = data;
+    if (!email || !file || !doctorId || !patientId || !timeType) {
+      throw new HttpException(
+        { message: 'Thiếu thông tin hóa đơn cần thiết' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // update booking status
+    const appointment = await this.bookingRepository.findOneBy({
+      doctorId: doctorId,
+      patientId: patientId,
+      timeType: timeType,
+      statusId: StatusId.CONFIRMED,
+    });
+    if (appointment) {
+      await this.bookingRepository.update(appointment.id, {
+        statusId: StatusId.DONE,
+      });
+    }
+    // send bill via email
+    await sendFinishMail({
+      receiverEmail: email,
+      patientName: fullName,
+      file: file,
+    });
+    return {
+      statusCode: 0,
+      message: 'OK',
+    };
   }
 
   findAll() {

@@ -1,7 +1,9 @@
+import { Booking } from 'src/booking/entities/booking.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -37,4 +39,7 @@ export class Patient {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Booking, (booking) => booking.patientData)
+  bookingData: Booking[];
 }

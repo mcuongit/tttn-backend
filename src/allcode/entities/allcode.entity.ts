@@ -1,3 +1,4 @@
+import { Booking } from 'src/booking/entities/booking.entity';
 import { DoctorInfo } from 'src/doctor_info/entities/doctor_info.entity';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -47,4 +48,7 @@ export class Allcode {
   @OneToMany(() => DoctorInfo, (doctorinfo) => doctorinfo.provinceData)
   @OneToMany(() => DoctorInfo, (doctorinfo) => doctorinfo.paymentData)
   doctorsInfo: DoctorInfo[];
+
+  @OneToMany(() => Booking, (booking) => booking.allcodeData)
+  bookings: Booking[];
 }

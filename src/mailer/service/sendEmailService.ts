@@ -32,3 +32,35 @@ export const sendSimpleEmail = async (dataSend: any) => {
     html: htmlContent, // html body
   });
 };
+
+export const sendFinishMail = async (dataSend: any) => {
+  const transporter = await nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_APP, // generated ethereal user
+      pass: process.env.MAIL_PASSWORD, // generated ethereal password
+    },
+  });
+
+  // send mail with defined transport object
+  const htmlContent = `<h3>Xin chào ${dataSend.patientName}</h3>
+                        <p>Cảm ơn bạn đã tin tưởng đặt và hoàn thành lịch khám bệnh trên hệ thống của chúng tôi</p>
+                        <p>Thông tin hóa đơn được gửi trong file đính kèm</p>
+                        <p>Chúc bạn một ngày tốt lành</p>`;
+  await transporter.sendMail({
+    from: '"Cuong Nguyen 👻" <foo@example.com>', // sender address
+    to: dataSend.receiverEmail, // list of receivers
+    subject: 'Kết quả đặt lịch khám bệnh', // Subject line
+    text: 'Hello world?', // plain text body
+    html: htmlContent, // html body
+    attachments: [
+      {
+        filename: `remedy-${dataSend.patientName}-${new Date().getTime()}.png`,
+        content: dataSend.file.split('base64,')[1],
+        encoding: 'base64',
+      },
+    ],
+  });
+};

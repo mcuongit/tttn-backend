@@ -10,6 +10,11 @@ export class BookingController {
     return this.bookingService.findOrCreate(data);
   }
 
+  @Post('finishBooking')
+  finishBooking(@Body() data: any) {
+    return this.bookingService.finishBooking(data);
+  }
+
   @Get('getPatientList/:doctorId/:date')
   findByDoctorAndDate(
     @Param('doctorId') doctorId: string,
