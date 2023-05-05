@@ -10,9 +10,9 @@ export class ScheduleService {
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
   ) {}
-  async create(createScheduleDto: any) {
+  async create(dataSchedule: any) {
     try {
-      let x = [...createScheduleDto];
+      let x = [...dataSchedule];
       x = x.map((i) => {
         i.maxNumber = 10;
         return i;
@@ -43,35 +43,34 @@ export class ScheduleService {
   }
 
   async findSchedule(doctorId: number, date: number) {
-    try {
-      const res = await this.scheduleRepository.find({
-        select: {
-          timeTypeData: {
-            type: true,
-            valueVi: true,
-            valueEn: true,
-          },
+    const _date = new Date(+date);
+    _date.setHours(0, 0, 0, 0);
+    console.log(_date);
+    const res = await this.scheduleRepository.find({
+      select: {
+        timeTypeData: {
+          type: true,
+          valueVi: true,
+          valueEn: true,
         },
-        relations: {
-          timeTypeData: true,
-          userData: true,
-        },
-        where: {
-          doctorId: doctorId,
-          date: new Date(+date),
-        },
-        order: {
-          timeType: 'ASC',
-        },
-      });
-      return {
-        statusCode: 0,
-        message: 'OK',
-        data: res,
-      };
-    } catch (error) {
-      throw new Error(error);
-    }
+      },
+      relations: {
+        timeTypeData: true,
+        userData: true,
+      },
+      where: {
+        doctorId: doctorId,
+        date: _date,
+      },
+      order: {
+        timeType: 'ASC',
+      },
+    });
+    return {
+      statusCode: 0,
+      message: 'OK',
+      data: res,
+    };
   }
 
   async findAll() {
