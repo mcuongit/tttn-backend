@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from './entities/schedule.entity';
 import { Repository } from 'typeorm';
@@ -85,7 +85,19 @@ export class ScheduleService {
   //   return `This action updates a #${id} schedule`;
   // }
 
-  remove(id: number) {
-    return `This action removes a #${id} schedule`;
+  async remove(id: number) {
+    const existed = this.scheduleRepository.findOneBy({ id });
+    if (!existed)
+      throw new HttpException(
+        {
+          message: 'Không tồn tại bản ghi',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    await this.scheduleRepository.delete(id);
+    return {
+      statusCode: 0,
+      message: 'OK',
+    };
   }
 }

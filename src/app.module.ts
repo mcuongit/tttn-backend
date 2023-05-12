@@ -26,6 +26,10 @@ import { PatientModule } from './patient/patient.module';
 import { Patient } from './patient/entities/patient.entity';
 import { NotificationModule } from './notification/notification.module';
 import { Notification } from './notification/entities/notification.entity';
+import { CategoryModule } from './category/category.module';
+import { Category } from './category/entities/category.entity';
+import { PostModule } from './post/post.module';
+import { Post } from './post/entities/post.entity';
 
 @Module({
   imports: [
@@ -48,6 +52,8 @@ import { Notification } from './notification/entities/notification.entity';
         Clinic,
         Patient,
         Notification,
+        Category,
+        Post,
       ],
       synchronize: true,
       logging: true,
@@ -65,6 +71,8 @@ import { Notification } from './notification/entities/notification.entity';
     ClinicModule,
     PatientModule,
     NotificationModule,
+    CategoryModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

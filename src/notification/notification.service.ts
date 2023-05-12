@@ -26,13 +26,20 @@ export class NotificationService {
   }
 
   async findAll() {
-    return await this.notificationRepository.find();
+    return await this.notificationRepository.find({
+      order: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   async findAllByDate(date: number) {
     return await this.notificationRepository.find({
       where: {
         to: new Date(date),
+      },
+      order: {
+        createdAt: 'DESC',
       },
     });
   }
