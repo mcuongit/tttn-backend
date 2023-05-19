@@ -32,6 +32,12 @@ export class PostController {
   findAll() {
     return this.postService.findAll();
   }
+
+  @Get('findByCatSlug/:slug')
+  findPostByCatSlug(@Param('slug') slug: string) {
+    return this.postService.findPostByCatSlug(slug);
+  }
+
   @Get('get-post/:limit')
   findPostLimit(@Param('limit') limit: string) {
     return this.postService.findLimitPost(+limit);

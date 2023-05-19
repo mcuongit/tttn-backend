@@ -20,6 +20,10 @@ export class CategoryController {
     return this.categoryService.create(createCategoryDto);
   }
 
+  @Get('findLimit/:limit')
+  findLimit(@Param('limit') limit: string) {
+    return this.categoryService.findLimit(+limit);
+  }
   @Get()
   findAll() {
     return this.categoryService.findAll();

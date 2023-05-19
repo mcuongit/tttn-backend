@@ -27,6 +27,12 @@ export class CategoryService {
     return await this.categoryRepository.find();
   }
 
+  async findLimit(limit: number) {
+    return await this.categoryRepository.find({
+      take: limit,
+    });
+  }
+
   async findOne(id: number) {
     return await this.categoryRepository.findOneBy({ id });
   }

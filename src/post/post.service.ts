@@ -4,6 +4,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
+import * as fs from 'fs';
 
 @Injectable()
 export class PostService {
@@ -26,6 +27,24 @@ export class PostService {
     return await this.postRepository.find({
       order: {
         createdAt: 'DESC',
+      },
+      relations: {
+        categoryData: true,
+      },
+    });
+  }
+  async findPostByCatSlug(slug: string) {
+    return await this.postRepository.find({
+      where: {
+        categoryData: {
+          slug: slug,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      relations: {
+        categoryData: true,
       },
     });
   }
@@ -50,6 +69,15 @@ export class PostService {
         HttpStatus.BAD_REQUEST,
       );
     await this.postRepository.update(id, { ...data });
+    if (data.image && exist.image) {
+      const path = `uploads/posts/${exist.image}`;
+      if (fs.existsSync(path)) {
+        fs.unlink(path, (err) => {
+          if (err) throw err;
+          console.log('Delete File successfully.');
+        });
+      }
+    }
     return {
       statusCode: 0,
       message: 'OK',
@@ -64,6 +92,15 @@ export class PostService {
         HttpStatus.BAD_REQUEST,
       );
     await this.postRepository.delete(id);
+    if (exist.image) {
+      const path = `uploads/posts/${exist.image}`;
+      if (fs.existsSync(path)) {
+        fs.unlink(path, (err) => {
+          if (err) throw err;
+          console.log('Delete File successfully.');
+        });
+      }
+    }
     return {
       statusCode: 0,
       message: 'OK',
