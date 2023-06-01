@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import * as fs from 'fs';
 
@@ -50,6 +50,11 @@ export class PostService {
   }
   async findLimitPost(limit: number) {
     return await this.postRepository.find({
+      where: {
+        categoryData: {
+          slug: Not('trang-don'),
+        },
+      },
       order: {
         createdAt: 'DESC',
       },

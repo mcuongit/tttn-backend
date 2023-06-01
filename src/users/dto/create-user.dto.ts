@@ -1,9 +1,10 @@
+import { IsEmail } from 'class-validator';
 import { UserGender, UserRole } from '../entities/user.entity';
 
 export class CreateUserDto {
   firstName: string;
   lastName: string;
-  email: string;
+  @IsEmail() email: string;
   password: string;
   gender: UserGender;
   address: string;

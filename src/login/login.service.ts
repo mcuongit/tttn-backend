@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CreateLoginDto } from './dto/create-login.dto';
@@ -22,6 +22,41 @@ export class LoginService {
     } catch (error) {
       throw new Error(error);
     }
+  }
+  async findLogin(data: CreateLoginDto) {
+    if (!data.email) {
+      throw new HttpException(
+        'Email không được bỏ trống',
+        HttpStatus.UNAUTHORIZED,
+      );
+    } else if (!data.password) {
+      throw new HttpException(
+        'Mật khẩu không được để trống',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    if (!this.checkUserEmail(data.email)) {
+      throw new HttpException(
+        'Email không tồn tại trong hệ thống',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    // get password
+    const pwd = await this.userRepository.findOne({
+      select: {
+        password: true,
+      },
+      where: {
+        email: data.email,
+      },
+    });
+    //   so sánh mật khẩu
+    const cpm = await bcrypt.compare(data.password, pwd.password);
+    if (!cpm) throw new HttpException('Sai mật khẩu', HttpStatus.UNAUTHORIZED);
+    const user = await this.userRepository.findOneBy({
+      email: data.email,
+    });
+    return user;
   }
   async findOne(createLoginDto: CreateLoginDto) {
     try {
@@ -51,7 +86,6 @@ export class LoginService {
           email: createLoginDto.email,
         },
       });
-      console.log(pwd.password);
       //   so sánh mật khẩu
       const cpm = await bcrypt.compare(createLoginDto.password, pwd.password);
       if (!cpm) {

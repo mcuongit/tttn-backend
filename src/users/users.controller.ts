@@ -7,21 +7,34 @@ import {
   Param,
   Delete,
   StreamableFile,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, ListIds } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Res, UploadedFile, UseInterceptors } from '@nestjs/common/decorators';
+import {
+  Req,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { createReadStream } from 'fs';
 import * as fs from 'fs';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  // auth
+  @UseGuards(AuthGuard())
+  @Get('profile')
+  async getProfile(@Req() req: any) {
+    return req.user;
+  }
+  // end auth
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);

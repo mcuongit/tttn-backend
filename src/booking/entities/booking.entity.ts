@@ -1,5 +1,6 @@
 import { Allcode } from 'src/allcode/entities/allcode.entity';
 import { Patient } from 'src/patient/entities/patient.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -55,4 +56,8 @@ export class Booking {
   @ManyToOne(() => Allcode)
   @JoinColumn({ name: 'timeType', referencedColumnName: 'key' })
   allcodeData: Allcode[];
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'doctorId', referencedColumnName: 'id' })
+  doctorData: Allcode[];
 }

@@ -15,6 +15,7 @@ import { Allcode } from 'src/allcode/entities/allcode.entity';
 import { Markdown } from 'src/markdown/entities/markdown.entity';
 import { DoctorInfo } from 'src/doctor_info/entities/doctor_info.entity';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { Booking } from 'src/booking/entities/booking.entity';
 
 export enum UserGender {
   MALE = 'M',
@@ -102,4 +103,7 @@ export class User {
 
   @OneToMany(() => Schedule, (schedule) => schedule.userData)
   doctorData: Schedule;
+
+  @OneToMany(() => Booking, (booking) => booking.doctorData)
+  bookingData: Schedule;
 }
