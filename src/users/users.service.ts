@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { CreateUserDto, ListIds } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -12,6 +12,20 @@ export class UsersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  async searchDoctor(query: string) {
+    if (!query)
+      throw new HttpException('Không có thông tin', HttpStatus.NOT_FOUND);
+    return await this.userRepository.find({
+      where: [
+        { firstName: Like(`%${query}%`) },
+        { lastName: Like(`%${query}%`) },
+      ],
+      relations: {
+        positionData: true,
+      },
+    });
+  }
 
   async checkUserEmail(email: string) {
     try {

@@ -35,6 +35,11 @@ export class UsersController {
     return req.user;
   }
   // end auth
+
+  @Get('search/:query')
+  searchDoctor(@Param('query') query: string) {
+    return this.usersService.searchDoctor(query);
+  }
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);

@@ -30,6 +30,8 @@ import { CategoryModule } from './category/category.module';
 import { Category } from './category/entities/category.entity';
 import { PostModule } from './post/post.module';
 import { Post } from './post/entities/post.entity';
+import { ContactModule } from './contact/contact.module';
+import { Contact } from './contact/entities/contact.entity';
 
 @Module({
   imports: [
@@ -54,6 +56,7 @@ import { Post } from './post/entities/post.entity';
         Notification,
         Category,
         Post,
+        Contact,
       ],
       synchronize: true,
       logging: true,
@@ -73,6 +76,7 @@ import { Post } from './post/entities/post.entity';
     NotificationModule,
     CategoryModule,
     PostModule,
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService],

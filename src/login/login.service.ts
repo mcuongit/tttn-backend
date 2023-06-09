@@ -12,17 +12,6 @@ export class LoginService {
     private userRepository: Repository<User>,
   ) {}
 
-  async checkUserEmail(email: string) {
-    try {
-      const user = await this.userRepository.findOne({
-        where: { email: email },
-      });
-      if (user) return true;
-      return false;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
   async findLogin(data: CreateLoginDto) {
     if (!data.email) {
       throw new HttpException(
@@ -35,7 +24,10 @@ export class LoginService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    if (!this.checkUserEmail(data.email)) {
+    const isExisted = await this.userRepository.findOneBy({
+      email: data.email,
+    });
+    if (!isExisted) {
       throw new HttpException(
         'Email không tồn tại trong hệ thống',
         HttpStatus.UNAUTHORIZED,
@@ -71,7 +63,11 @@ export class LoginService {
           message: 'Mật khẩu không được để trống',
         };
       }
-      if (!this.checkUserEmail(createLoginDto.email)) {
+      const isExisted = await this.userRepository.findOneBy({
+        email: createLoginDto.email,
+      });
+
+      if (!isExisted) {
         return {
           statusCode: 2,
           message: 'Email không tồn tại trong hệ thống',

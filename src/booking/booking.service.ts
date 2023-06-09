@@ -20,39 +20,24 @@ export class BookingService {
     private bookingRepository: Repository<Booking>,
   ) {}
   async findOrCreate(data: BookingDto) {
-    console.log(data);
-    const patient = await this.patientRepository.findOneBy({
+    const toSavePatient: CreatePatientDto = {
+      fullName: data.fullName,
+      gender: data.gender,
+      birthday: data.birthday,
+      address: data.address,
+      reason: data.reason,
       email: data.email,
-    });
-    let toSaveBooking: CreateBookingDto;
-    if (patient) {
-      toSaveBooking = {
-        patientId: patient.id.toString(),
-        statusId: StatusId.NEW,
-        doctorId: data.doctorId,
-        date: data.date,
-        timeType: data.timeType,
-      };
-    } else {
-      const toSavePatient: CreatePatientDto = {
-        fullName: data.fullName,
-        gender: data.gender,
-        birthday: data.birthday,
-        address: data.address,
-        reason: data.reason,
-        email: data.email,
-        phone: data.phone,
-      };
-      const res = await this.patientRepository.insert(toSavePatient);
-      const { insertId } = res.raw;
-      toSaveBooking = {
-        patientId: insertId,
-        statusId: StatusId.NEW,
-        doctorId: data.doctorId,
-        date: data.date,
-        timeType: data.timeType,
-      };
-    }
+      phone: data.phone,
+    };
+    const res = await this.patientRepository.insert(toSavePatient);
+    const { insertId } = res.raw;
+    const toSaveBooking: CreateBookingDto = {
+      patientId: insertId,
+      statusId: StatusId.NEW,
+      doctorId: data.doctorId,
+      date: data.date,
+      timeType: data.timeType,
+    };
     const created = await this.create(toSaveBooking);
     await sendSimpleEmail({
       receiverEmail: data.email,
