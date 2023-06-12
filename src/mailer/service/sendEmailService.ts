@@ -25,7 +25,7 @@ export const sendSimpleEmail = async (dataSend: any) => {
   });
 
   // send mail with defined transport object
-  const htmlContent = `<h3>Xin chào ${dataSend.patientName}</h3>
+  const htmlContent = `<div style="font-family: system-ui;"><h3>Xin chào ${dataSend.patientName}</h3>
                         <p>Thông tin đặt lịch khám bệnh của bạn như sau: </p>
                         <fieldset>
                             <legend style="margin-bottom: 10px; font-weight: bold;">Thông tin lịch khám bệnh</legend>
@@ -35,7 +35,7 @@ export const sendSimpleEmail = async (dataSend: any) => {
                             <span>${dataSend.time}</span><br>
                         </fieldset>
                         <p>Nếu thông tin trên là sự thật, vui lòng nhấn vào <a href="${dataSend.redirectLink}" target="?_blank">liên kết này</a> để xác nhận đặt lịch khám bệnh.</p>
-                        <p>Chúc bạn một ngày tốt lành</p>`;
+                        <p>Chúc bạn một ngày tốt lành</p></div>`;
   await transporter.sendMail({
     from: '"Cuong Nguyen 👻" <foo@example.com>', // sender address
     to: dataSend.receiverEmail, // list of receivers
@@ -79,7 +79,8 @@ export const sendFinishMail = async (dataSend: any) => {
 
 export const sendContactReply = async (dataSend: any) => {
   const transporter = await transport();
-  const content = `<h3>
+  const content = `<div style="font-family: system-ui;">
+<h3>
     Xin chào ${dataSend.gender === 'm' ? 'anh' : 'chị'} ${dataSend.name}
   </h3>
   <h4>
@@ -92,7 +93,8 @@ export const sendContactReply = async (dataSend: any) => {
   <hr/>
   <p>Chúng tôi xin trả lời câu hỏi của bạn như sau:</p>
   <p>${dataSend.replyContent}</p>
-  <p>Hi vọng câu trả lời trên sẽ giúp ích cho bạn. Chúc bạn một ngày tốt lành</p>`;
+  <p>Hi vọng câu trả lời trên sẽ giúp ích cho bạn. Chúc bạn một ngày tốt lành</p>
+</div>`;
   await await transporter.sendMail({
     from: '"Cuong Nguyen 👻" <foo@example.com>',
     to: dataSend.email,
