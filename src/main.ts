@@ -12,6 +12,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://localhost:5000',
       'http://localhost:5173',
+      process.env.REACT_URL,
     ],
     credentials: true,
   });
