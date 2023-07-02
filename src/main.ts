@@ -13,6 +13,7 @@ async function bootstrap() {
       'http://localhost:5000',
       'http://localhost:5173',
       process.env.REACT_URL,
+      'https://manhcuong-fe.vercel.app/',
     ],
     credentials: true,
   });
