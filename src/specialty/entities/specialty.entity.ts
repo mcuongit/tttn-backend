@@ -17,10 +17,10 @@ export class Specialty {
   @Column()
   name: string;
 
-  @Column({ type: 'longtext', nullable: true })
+  @Column({ type: 'text', nullable: true })
   descriptionHTML: string;
 
-  @Column({ type: 'longtext', nullable: true })
+  @Column({ type: 'text', nullable: true })
   descriptionMarkdown: string;
 
   @CreateDateColumn()
