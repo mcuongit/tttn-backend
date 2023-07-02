@@ -27,6 +27,9 @@ export class HomeService {
       .addSelect('count(booking.id)', 'dCount')
       .groupBy('user.id')
       .addGroupBy('booking.id')
+      .addGroupBy('position.id')
+      .addGroupBy('gender.id')
+      .addGroupBy('role.id')
       .orderBy('dCount', 'DESC')
       .limit(lim)
       .getMany();
